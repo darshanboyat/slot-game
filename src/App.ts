@@ -5,7 +5,8 @@
 
 import * as PIXI from 'pixi.js';
 import { config } from './config';
-// import PlayButton from './components/PlayButton';
+import PlayButton from './components/PlayButton';
+import SelectPlayMode from './components/SelectPlayMode';
 import Reels from './components/Reels';
 import FPSDisplay from './components/FPSDisplay';
 
@@ -45,8 +46,11 @@ window.onload = () =>
     const app = createApplication();
     const stage = app.stage;
 
-    // const button = new PlayButton(config);
-    // stage.addChild(button);
+    const button = new PlayButton(config);
+    stage.addChild(button);
+
+    const select = new SelectPlayMode(config);
+    stage.addChild(select);
 
     const reels = new Reels(config, app.ticker);
     stage.addChild(reels);
@@ -54,14 +58,18 @@ window.onload = () =>
     const fpsDisplay = new FPSDisplay(config, app.ticker);
     stage.addChild(fpsDisplay);
 
-    // button.on('click', function (this: PlayButton) {
-    //   if (!reels.areSpinning()) {
-    //     this.setDisabled();
-    //     reels.spin(() => {
-    //       this.setInactive();
-    //     });
-    //   }
-    // });
+    button.on('click', function (this: PlayButton) {
+      if (!reels.areSpinning()) {
+        this.setDisabled();
+        reels.spin(() => {
+          this.setInactive();
+        });
+      }
+    });
+
+    select.on('click', function (this: SelectPlayMode) {
+      reels.setEasyMode(this.isOn());
+    });
 
     render(app);
   });
